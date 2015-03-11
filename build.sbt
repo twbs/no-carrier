@@ -2,7 +2,7 @@ name := "no-carrier"
 
 version := "1.0"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.5"
 
 mainClass := Some("com.getbootstrap.no_carrier.Main")
 
