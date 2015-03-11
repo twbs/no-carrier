@@ -8,7 +8,7 @@ mainClass := Some("com.getbootstrap.no_carrier.Main")
 
 resolvers ++= Seq("snapshots", "releases").map(Resolver.sonatypeRepo)
 
-libraryDependencies += "org.eclipse.mylyn.github" % "org.eclipse.egit.github.core" % "2.1.5"
+libraryDependencies += "com.jcabi" % "jcabi-github" % "0.21.3"
 
 libraryDependencies += "org.specs2" %% "specs2" % "2.3.12" % "test"
 
