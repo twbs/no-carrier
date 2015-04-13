@@ -1,6 +1,6 @@
 package com.getbootstrap.no_carrier
 
-import java.time.Duration
+import java.time.{Clock, Duration}
 import scala.util.{Success,Failure}
 import scala.util.Try
 import com.jcabi.github.Issue
@@ -19,6 +19,7 @@ case class Arguments(
 
 object Main extends App with StrictLogging {
   val enabled = false
+  implicit val clock = Clock.systemUTC
   val arguments = (args.toSeq match {
     case Seq(username, password, RepositoryId(repoId), NonEmptyStr(label), IntFromStr(PositiveInt(dayCount))) => {
       Some(Arguments(
