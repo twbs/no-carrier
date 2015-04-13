@@ -1,11 +1,9 @@
 package com.getbootstrap.no_carrier.github
 
-import org.eclipse.egit.github.core.client.GitHubClient
+import com.jcabi.github.{Github, RtGithub}
+import com.jcabi.http.wire.RetryWire
 
 case class Credentials(username: String, password: String) {
-  def client = {
-    val c = new GitHubClient()
-    c.setCredentials(username, password)
-    c
-  }
+  private def basicGithub: Github = new RtGithub(username, password)
+  def github: Github = new RtGithub(basicGithub.entry.through(classOf[RetryWire])) // FIXME: use RetryCarefulWire once it's available
 }
