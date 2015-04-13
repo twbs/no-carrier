@@ -1,6 +1,6 @@
 package com.getbootstrap.no_carrier
 
-import java.time.{Duration, Instant}
+import java.time.{Clock, Instant, Duration}
 
 package object util {
   val InstantOrdering = implicitly[Ordering[Instant]]
@@ -8,8 +8,12 @@ package object util {
   implicit class RichInstant(instant: Instant) {
     import InstantOrdering._
 
-    def +(duration: Duration) = instant.plus(duration)
-    def isBeyondTimeout(timeout: Duration): Boolean = (instant + timeout) < Instant.now()
+    def +(duration: Duration): Instant = instant.plus(duration)
+    def isBeyondTimeout(timeout: Duration)(implicit clock: Clock): Boolean = {
+      val now = Instant.now(clock)
+      val deadline = (instant + timeout)
+      deadline < now
+    }
   }
 
   implicit class RichTraversableOnce[T](trav: TraversableOnce[T]) {
