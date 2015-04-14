@@ -1,10 +1,9 @@
 package com.getbootstrap.no_carrier.github
 
 import com.jcabi.github.{Github, RtGithub}
-import com.jcabi.http.wire.RetryWire
+import com.getbootstrap.no_carrier.http.{UserAgent, SuperWire}
 
 case class Credentials(username: String, password: String) {
   private def basicGithub: Github = new RtGithub(username, password)
-  def github: Github = new RtGithub(basicGithub.entry.through(classOf[RetryWire])) // FIXME: use RetryCarefulWire once it's available
-  // FIXME: also make use of UserAgentWire
+  def github(implicit userAgent: UserAgent): Github = new RtGithub(basicGithub.entry.through(classOf[SuperWire], userAgent))
 }

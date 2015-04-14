@@ -6,9 +6,10 @@ import scala.util.Try
 import com.jcabi.github.{Github, Issue}
 import com.jcabi.github.Coordinates.{Simple=>RepoId}
 import com.typesafe.scalalogging.StrictLogging
-import com.getbootstrap.no_carrier.util._
 import com.getbootstrap.no_carrier.github.{Credentials, FancyIssue}
 import com.getbootstrap.no_carrier.github.util._
+import com.getbootstrap.no_carrier.http.UserAgent
+import com.getbootstrap.no_carrier.util._
 
 case class Arguments(
   github: Github,
@@ -20,6 +21,7 @@ case class Arguments(
 object Main extends App with StrictLogging {
   val enabled = false
   implicit val clock = Clock.systemUTC
+  implicit val userAgent = new UserAgent("NoCarrier/0.1 (https://github.com/twbs/no-carrier)")
   val arguments = (args.toSeq match {
     case Seq(username, password, RepositoryId(repoId), NonEmptyStr(label), IntFromStr(PositiveInt(dayCount))) => {
       Some(Arguments(

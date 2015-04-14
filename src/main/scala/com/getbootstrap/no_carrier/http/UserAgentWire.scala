@@ -9,7 +9,7 @@ import com.jcabi.http._
 object UserAgentWire {
   private val userAgentHeader = "User-Agent"
 }
-case class UserAgentWire(private val wire: Wire, userAgent: String) extends Wire {
+case class UserAgentWire(private val wire: Wire, userAgent: UserAgent) extends Wire {
   @Override
   def send(
     request: Request,
@@ -18,7 +18,7 @@ case class UserAgentWire(private val wire: Wire, userAgent: String) extends Wire
     headers: JavaCollection[MapEntry[String, String]],
     content: InputStream
   ): Response = {
-    val header = new ImmutableHeader(UserAgentWire.userAgentHeader, userAgent)
+    val header = new ImmutableHeader(UserAgentWire.userAgentHeader, userAgent.userAgent)
     val newHeaders = header +: headers.asScala.filter{ _.getKey != UserAgentWire.userAgentHeader}.toSeq
     wire.send(request, home, method, newHeaders.asJava, content)
   }
