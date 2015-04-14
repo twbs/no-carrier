@@ -32,9 +32,20 @@ package object util {
     }
   }
 
+  implicit class RichSmartIssue(issue: SmartIssue) {
+    def lastClosure: Option[IssueEvent] = {
+      Try{ Some(issue.latestEvent(IssueEvent.CLOSED)) }.recover{
+        case _:IllegalStateException => None
+      }.get
+    }
+  }
+
+  implicit class RichIssueEvent(event: IssueEvent) {
+    def smart: SmartIssueEvent = new SmartIssueEvent(event)
+  }
+
   implicit class RichSmartIssueEvent(event: SmartIssueEvent) {
     def isLabeled: Boolean = event.`type` == IssueEvent.LABELED
-    def isClosed: Boolean = event.`type` == IssueEvent.CLOSED
 
     def label: Option[String] = {
       Try {Option[JsonObject](event.json.getJsonObject("label")).map {_.getString("name")}}.recoverWith {
