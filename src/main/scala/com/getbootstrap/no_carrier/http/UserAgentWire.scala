@@ -19,7 +19,7 @@ case class UserAgentWire(private val wire: Wire, userAgent: String) extends Wire
     content: InputStream
   ): Response = {
     val header = new ImmutableHeader(UserAgentWire.userAgentHeader, userAgent)
-    val newHeaders = header +: headers.asScala.filter{ _ != UserAgentWire.userAgentHeader}.toSeq
+    val newHeaders = header +: headers.asScala.filter{ _.getKey != UserAgentWire.userAgentHeader}.toSeq
     wire.send(request, home, method, newHeaders.asJava, content)
   }
 }
