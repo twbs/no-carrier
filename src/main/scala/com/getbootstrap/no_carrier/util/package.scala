@@ -11,7 +11,7 @@ package object util {
     def +(duration: Duration): Instant = instant.plus(duration)
     def isBeyondTimeout(timeout: Duration)(implicit clock: Clock): Boolean = {
       val now = Instant.now(clock)
-      val deadline = (instant + timeout)
+      val deadline = instant + timeout
       deadline < now
     }
   }
