@@ -5,11 +5,10 @@ import java.time.Instant
 import javax.json.JsonObject
 import scala.util.{Try,Success}
 import scala.collection.JavaConverters._
-import com.jcabi.github.{Event=>IssueEvent, Issue, Issues, Search}
+import com.jcabi.github.{Event => IssueEvent, Issue, Issues, IssueLabels, Comment, Search, Repo, Repos}
 import com.jcabi.github.Issue.{Smart=>SmartIssue}
 import com.jcabi.github.Event.{Smart=>SmartIssueEvent}
 import com.jcabi.github.Comment.{Smart=>SmartComment}
-import com.getbootstrap.no_carrier.util._
 
 package object util {
   implicit class RichIssues(issues: Issues) {
@@ -41,6 +40,27 @@ package object util {
       Try {Option[JsonObject](event.json.getJsonObject("label")).map {_.getString("name")}}.recoverWith {
         case _: ClassCastException => Success(None)
       }.get
+    }
+  }
+
+  implicit class RichComment(comment: Comment) {
+    def smart: SmartComment = new SmartComment(comment)
+  }
+
+  implicit class RichRepos(repos: Repos) {
+    import javax.json.Json
+
+    def create(name: String): Repo = {
+      val json = Json.createObjectBuilder.add("name", name).build
+      repos.create(json)
+    }
+  }
+
+  implicit class RichIssueLabels(labels: IssueLabels) {
+    def add(label: String) {
+      val singleton = new java.util.LinkedList[String]()
+      singleton.add(label)
+      labels.add(singleton)
     }
   }
 }
