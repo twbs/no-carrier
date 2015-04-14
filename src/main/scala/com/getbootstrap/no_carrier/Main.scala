@@ -1,9 +1,9 @@
 package com.getbootstrap.no_carrier
 
 import java.time.{Clock, Duration}
-import scala.util.{Success,Failure}
+import scala.util.{Success, Failure}
 import scala.util.Try
-import com.jcabi.github.Issue
+import com.jcabi.github.{Github, Issue}
 import com.jcabi.github.Coordinates.{Simple=>RepoId}
 import com.typesafe.scalalogging.StrictLogging
 import com.getbootstrap.no_carrier.util._
@@ -11,7 +11,7 @@ import com.getbootstrap.no_carrier.github.{Credentials, FancyIssue}
 import com.getbootstrap.no_carrier.github.util._
 
 case class Arguments(
-  credentials: Credentials,
+  github: Github,
   repoId: RepoId,
   label: String,
   timeout: Duration
@@ -23,7 +23,7 @@ object Main extends App with StrictLogging {
   val arguments = (args.toSeq match {
     case Seq(username, password, RepositoryId(repoId), NonEmptyStr(label), IntFromStr(PositiveInt(dayCount))) => {
       Some(Arguments(
-        Credentials(username = username, password = password),
+        Credentials(username = username, password = password).github,
         repoId = repoId,
         label = label,
         timeout = java.time.Duration.ofDays(dayCount)
@@ -40,8 +40,7 @@ object Main extends App with StrictLogging {
 
   def main(args: Arguments) {
     logger.info("Started session.")
-    val github = args.credentials.github
-    val repo = github.repos.get(args.repoId)
+    val repo = args.github.repos.get(args.repoId)
 
     val waitingOnOp = repo.issues.openWithLabel(args.label)
     val opNeverDelivered = waitingOnOp.filter{ issue => new FancyIssue(issue = issue, label = args.label, timeout = args.timeout).opNeverDelivered }
