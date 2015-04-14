@@ -62,7 +62,7 @@ object Main extends App with StrictLogging {
            |If the user does later end up responding, a team member will be happy to reopen this issue.
            |After a long period of further inactivity, this issue may get automatically locked.
            |""".stripMargin
-      issue.smart.createdAt.toInstant
+
       val attempt = Try{ issue.comments.post(explanatoryComment) }.flatMap{ comment => {
         logger.info(s"Posted comment #${comment.number}")
         Try{ issue.smart.close() }
