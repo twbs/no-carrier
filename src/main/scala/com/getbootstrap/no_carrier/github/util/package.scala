@@ -24,7 +24,7 @@ package object util {
   implicit class RichIssue(issue: Issue) {
     def smart: SmartIssue = new SmartIssue(issue)
     def smartEvents: Iterable[SmartIssueEvent] = issue.events.asScala.map{ new SmartIssueEvent(_) }
-    def smartComments: Iterable[SmartComment] = issue.comments.iterate.asScala.map{ new SmartComment(_) }
+    def commentsIterable: Iterable[Comment] = issue.comments.iterate.asScala
 
     def lastLabelledWithAt(label: String): Option[Instant] = {
       val labellings = issue.smartEvents.filter{ event => event.isLabeled && event.label == Some(label) }

@@ -8,7 +8,7 @@ import InstantOrdering._
 
 class FancyIssue(val issue: Issue, val label: String, val timeout: Duration)(implicit clock: Clock) {
   lazy val lastLabelledAt: Instant = issue.lastLabelledWithAt(label).get
-  lazy val lastCommentedOnAt: Option[Instant] = issue.smartComments.lastOption.map{ _.createdAt.toInstant }
+  lazy val lastCommentedOnAt: Option[Instant] = issue.commentsIterable.lastOption.map{ _.smart.createdAt.toInstant }
   lazy val lastClosedAt: Option[Instant] = issue.smart.lastClosure.map{ _.smart.createdAt.toInstant }
   lazy val hasSubsequentComment: Boolean = lastCommentedOnAt match {
     case None => false
