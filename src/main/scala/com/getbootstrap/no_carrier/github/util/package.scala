@@ -29,7 +29,7 @@ package object util {
 
     def lastLabelledWithAt(label: String): Option[Instant] = {
       val labellings = issue.smartEvents.filter{ event => event.isLabeled && event.label == Some(label) }
-      labellings.map{ _.createdAt.toInstant }.maxOption
+      labellings.map{ _.createdAt.toInstant }.lastOption
     }
   }
 

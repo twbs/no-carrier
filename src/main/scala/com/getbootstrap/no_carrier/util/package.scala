@@ -15,10 +15,4 @@ package object util {
       deadline < now
     }
   }
-
-  implicit class RichTraversableOnce[T](trav: TraversableOnce[T]) {
-    def maxOption(implicit cmp: Ordering[T]): Option[T] = {
-      if (trav.isEmpty) None else Some(trav.max)
-    }
-  }
 }
