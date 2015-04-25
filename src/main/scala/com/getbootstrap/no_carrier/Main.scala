@@ -22,10 +22,11 @@ object Main extends App with StrictLogging {
   val enabled = false
   implicit val clock = Clock.systemUTC
   implicit val userAgent = new UserAgent("NoCarrier/0.1 (https://github.com/twbs/no-carrier)")
+  val rateLimitThreshold = 10
   val arguments = (args.toSeq match {
     case Seq(username, password, RepositoryId(repoId), NonEmptyStr(label), IntFromStr(PositiveInt(dayCount))) => {
       Some(Arguments(
-        Credentials(username = username, password = password).github,
+        Credentials(username = username, password = password).github(rateLimitThreshold),
         repoId = repoId,
         label = label,
         timeout = java.time.Duration.ofDays(dayCount)
