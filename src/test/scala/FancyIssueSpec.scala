@@ -1,6 +1,6 @@
-import java.time.{Clock, Instant}
-import scala.collection.JavaConverters._
+import java.time.{Clock,Duration}
 import org.specs2.mutable._
+import com.jcabi.github.Issue
 import com.jcabi.github.mock.MkGithub
 import com.getbootstrap.no_carrier.github.util._
 import test_implicits._
@@ -10,13 +10,27 @@ class FancyIssueSpec extends Specification {
   val github = new MkGithub("mock_gh")
   val repo = github.repos.create("foobar")
   val label = "waiting-for-OP"
-  val twoSecsInMs = 2000
+  val twoSecsInMs = Duration.ofSeconds(2).toMillis
+  val tinyDuration = Duration.ofSeconds(2)
+  val tinyDelayMs = tinyDuration.toMillis
+  val mediumTimeout = Duration.ofSeconds(4)
+  val longDuration = Duration.ofSeconds(8)
+  val longDelayMs = longDuration.toMillis
+  val twoDays = Duration.ofDays(2)
   def newIssue() = repo.issues.create("Title here", "Description here")
+  def longDelay() {
+    Thread.sleep(longDelayMs)
+  }
   def delay() {
     Thread.sleep(twoSecsInMs)
   }
+  def tinyDelay() {
+    Thread.sleep(tinyDelayMs)
+  }
 
   "lastCommentedOnAt" should {
+    implicit val timeout = twoDays
+
     "give the only value when there is exactly one comment" in {
       val issue = newIssue()
       val comment = issue.comments.post("First comment").smart
@@ -34,6 +48,8 @@ class FancyIssueSpec extends Specification {
   }
 
   "lastLabelledAt" should {
+    implicit val timeout = twoDays
+
     "give the maximum when there have been several labellings" in {
       val issue = newIssue()
       issue.labels.add(label)
@@ -45,12 +61,14 @@ class FancyIssueSpec extends Specification {
       val before = clock.instant()
       issue.labels.add(label)
       val after = clock.instant()
-      issue.fancy.lastLabelledAt must beGreaterThanOrEqualTo(before.truncatedToSecs)
-      issue.fancy.lastLabelledAt must beLessThanOrEqualTo(after.truncatedToSecs)
+      issue.fancy.lastLabelledAt must beSome(greaterThanOrEqualTo(before.truncatedToSecs))
+      issue.fancy.lastLabelledAt must beSome(lessThanOrEqualTo(after.truncatedToSecs))
     }
   }
 
   "lastClosedAt" should {
+    implicit val timeout = twoDays
+
     "be None when the issue is open" in {
       val issue = newIssue()
       issue.fancy.lastClosedAt must beNone
@@ -82,6 +100,8 @@ class FancyIssueSpec extends Specification {
   }
 
   "wasClosedAfterLabelling" should {
+    implicit val timeout = twoDays
+
     "be false when the issue has never been closed" in {
       val issue = newIssue()
       issue.fancy.wasClosedAfterLabelling must beFalse
@@ -104,9 +124,504 @@ class FancyIssueSpec extends Specification {
       issue.smart.open()
       issue.fancy.wasClosedAfterLabelling must beTrue
     }
-    "be correct when the issue has been labelled, closed, and reopened multiple times" in {
-      val issue = newIssue()
-      // FIXME
+  }
+
+  def addLabel(issue: Issue) {
+    issue.labels.add(label)
+    tinyDelay()
+  }
+  def unlabel(issue: Issue) {
+    issue.labels.remove(label)
+    tinyDelay()
+  }
+  def close(issue: Issue) {
+    issue.smart.close()
+    tinyDelay()
+  }
+  def reopen(issue: Issue) {
+    issue.smart.open()
+    tinyDelay()
+  }
+  def commentOn(issue: Issue) {
+    issue.uniqueComment()
+    tinyDelay()
+  }
+
+  "opNeverDelivered" should {
+    implicit val timeout = mediumTimeout
+
+    "work correctly in a fairly exhaustive example" in {
+      var issue = newIssue()
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      issue.smart.open()
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      issue.smart.open()
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      issue.smart.open()
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      // same as previous but without any delay
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      // same as previous but without any delay
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      // same as previous but without any delay
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      issue.labels.add(label)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      // same as previous but without any delay
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      issue = newIssue()
+      close(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      reopen(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      addLabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      longDelay()
+      issue.fancy.opNeverDelivered must beTrue
+      unlabel(issue)
+      issue.fancy.opNeverDelivered must beFalse
+      commentOn(issue)
+      issue.fancy.opNeverDelivered must beFalse
+
+      ok
     }
   }
 }

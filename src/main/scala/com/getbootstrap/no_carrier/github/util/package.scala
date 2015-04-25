@@ -33,8 +33,10 @@ package object util {
   }
 
   implicit class RichSmartIssue(issue: SmartIssue) {
-    def lastClosure: Option[IssueEvent] = {
-      Try{ Some(issue.latestEvent(IssueEvent.CLOSED)) }.recover{
+    def lastClosure: Option[IssueEvent] = latestEventOption(IssueEvent.CLOSED)
+    def lastReopening: Option[IssueEvent] = latestEventOption(IssueEvent.REOPENED)
+    def latestEventOption(eventType: String): Option[IssueEvent] = {
+      Try{ Some(issue.latestEvent(eventType)) }.recover{
         case _:IllegalStateException => None
       }.get
     }
@@ -68,6 +70,7 @@ package object util {
   }
 
   implicit class RichIssueLabels(labels: IssueLabels) {
+    def smart: IssueLabels.Smart = new IssueLabels.Smart(labels)
     def add(label: String) {
       val singleton = new java.util.LinkedList[String]()
       singleton.add(label)
