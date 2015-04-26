@@ -58,11 +58,13 @@ object Main extends App with StrictLogging {
     logger.info(s"OP never delivered on issue #${issue.number}. Going to close it out.")
     if (enabled) {
       val explanatoryComment =
-        s"""This issue is being automatically closed since the original poster (or another relevant commenter) hasn't responded to the question or request made to them ${timeout.toDays} days ago.
-           |We are therefore assuming that the user has lost interest in this issue or was able to resolve their problem on their own.
-           |If the user does later end up responding, a team member will be happy to reopen this issue.
-           |After a long period of further inactivity, this issue may get automatically locked.
-           |""".stripMargin
+        s"""Hey there!
+           |
+           |We're automatically closing this issue since the original poster (or another commenter) hasn't yet responded to the question or request made to them ${timeout.toDays} days ago. We therefore assume that the user has lost interest or resolved the problem on their own. Closed issues that remain inactive for a long period may get automatically locked.
+           |
+           |Don't worry though; if this is in error, let us know with a comment and we'll be happy to reopen the issue.
+           |
+           |Thanks!""".stripMargin
 
       val attempt = Try{ issue.comments.post(explanatoryComment) }.flatMap{ comment => {
         logger.info(s"Posted comment #${comment.number}")
