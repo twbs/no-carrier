@@ -2,7 +2,7 @@ NO CARRIER
 ======
 [![Build Status](https://travis-ci.org/cvrebert/no-carrier.svg?branch=master)](https://travis-ci.org/cvrebert/no-carrier)
 
-NO CARRIER is a tool to auto-close old GitHub issues that were waiting for a response from the reporter but never got a response in a reasonable amount of time.
+NO CARRIER is a tool to auto-close old GitHub issues that were abandoned by their reporter, which is to say that we were waiting for a response from the reporter but never got a response in a reasonable amount of time.
 
 Named after [the message indicating that your dial-up modem has lost its connection.](http://en.wikipedia.org/wiki/NO_CARRIER#As_Internet_slang)
 
