@@ -16,7 +16,7 @@ And then you wait for a reply. Unfortunately, for whatever reason, a surprisingl
 By automating the process of closing abandoned issues, the issue tracker is kept clean with less tedium on the part of issue triagers. The abandoned issue expiration policy is also applied more uniformly/fairly, and it's easier to use a canonical template for the closing issue comment that clearly and politely explains the reason for the closure.
 
 ## Used by
-* (Hopefully Bootstrap real soon)
+* (Hopefully [Bootstrap](https://github.com/twbs/bootstrap) real soon)
 
 ## Usage
 Java 8+ is required to run NO CARRIER. For instructions on building NO CARRIER yourself, see [the Contributing docs](https://github.com/twbs/no-carrier/blob/master/CONTRIBUTING.md).
