@@ -9,7 +9,7 @@ Named after [the message indicating that your dial-up modem has lost its connect
 ## Motivation
 You're a member of a popular open source project. Cool.
 
-But due to the project's popularity, you get lots of bug reports on the issue tracker, and often these reports are lacking key information that's explicitly mentioned in your CONTRIBUTING docs as being required. Or maybe you just need extra information or test results from the bug reporter. So, okay, you post nice reply comments on the issues, asking the reporters for the information or requesting that they do some investigation/tests.
+But due to the project's popularity, you get lots of bug reports on the issue tracker, and often these reports are lacking key information that's explicitly mentioned in your bug reporting docs as being required. Or maybe you just need extra information or test results from the bug reporter. So, okay, you post nice reply comments on the issues, asking the reporters for the information or requesting that they do some investigation/tests.
 
 And then you wait for a reply. Unfortunately, for whatever reason, a surprisingly large fraction of folks never end up replying to your questions/requests. So unactionable issues start to pile up. You occasionally review the oldest batch of such issues and close them manually.
 
