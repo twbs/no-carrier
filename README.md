@@ -1,6 +1,6 @@
 NO CARRIER
 ======
-[![Build Status](https://travis-ci.org/cvrebert/no-carrier.svg?branch=master)](https://travis-ci.org/cvrebert/no-carrier)
+[![Build Status](https://travis-ci.org/twbs/no-carrier.svg?branch=master)](https://travis-ci.org/twbs/no-carrier)
 
 NO CARRIER is a tool to auto-close old GitHub issues that were abandoned by their reporter, which is to say that we were waiting for a response from the reporter but never got a response in a reasonable amount of time.
 
@@ -19,7 +19,7 @@ By automating the process of closing abandoned issues, the issue tracker is kept
 * (Hopefully Bootstrap real soon)
 
 ## Usage
-Java 8+ is required to run NO CARRIER. For instructions on building NO CARRIER yourself, see [the Contributing docs](https://github.com/cvrebert/no-carrier/blob/master/CONTRIBUTING.md).
+Java 8+ is required to run NO CARRIER. For instructions on building NO CARRIER yourself, see [the Contributing docs](https://github.com/twbs/no-carrier/blob/master/CONTRIBUTING.md).
 
 NO CARRIER accepts exactly 5 command line arguments. Once you've built the JAR, run e.g. `java -jar no-carrier-assembly-1.0.jar <username> <password> <owner/repo> <label> <days>`. Here's what each of the arguments is:
 * `username`: Username of GitHub user to login as
@@ -36,5 +36,5 @@ We all stand on the shoulders of giants and get by with a little help from our f
 
 ## See also
 * [LMVTFY](https://github.com/cvrebert/lmvtfy), NO CARRIER's sister bot who does HTML validation
-* [Savage](https://github.com/cvrebert/savage), NO CARRIER's sister bot who runs cross-browser JS tests on Sauce Labs
+* [Savage](https://github.com/twbs/savage), NO CARRIER's sister bot who runs cross-browser JS tests on Sauce Labs
 * [Rorschach](https://github.com/twbs/rorschach), NO CARRIER's sister bot who sanity-checks Bootstrap pull requests
