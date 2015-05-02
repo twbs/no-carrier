@@ -50,6 +50,7 @@ package object util {
     def isLabeled: Boolean = event.`type` == IssueEvent.LABELED
 
     def label: Option[String] = {
+      // FIXME: Use event.label.name once jcabi-github 0.24+ is available
       Try {Option[JsonObject](event.json.getJsonObject("label")).map {_.getString("name")}}.recoverWith {
         case _: ClassCastException => Success(None)
       }.get
