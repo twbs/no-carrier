@@ -30,7 +30,7 @@ NO CARRIER accepts exactly 5 command line arguments. Once you've built the JAR, 
 * `days`: Integer number of days. If at least this number of days elapses after an issue has been labeled without any new comment being posted, NO CARRIER will close the issue and post an explanatory comment.
 
 ## License
-NO CARRIER is licensed under the [MIT License](https://github.com/twbs/no-carrier/blob/master/LICENSE.txt).
+NO CARRIER is released under the [MIT License](https://github.com/twbs/no-carrier/blob/master/LICENSE.txt).
 
 ## Acknowledgments
 We all stand on the shoulders of giants and get by with a little help from our friends. NO CARRIER is written in [Scala](http://www.scala-lang.org) and built on top of:
