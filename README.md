@@ -1,6 +1,7 @@
 NO CARRIER
 ======
 [![Build Status](https://travis-ci.org/twbs/no-carrier.svg?branch=master)](https://travis-ci.org/twbs/no-carrier)
+![Development Status :: 4 - Beta](https://img.shields.io/badge/maturity-beta-yellow.svg "Development Status :: 4 - Beta")
 [![MIT License](https://img.shields.io/github/license/twbs/no-carrier.svg)](https://github.com/twbs/no-carrier/blob/master/LICENSE.txt)
 
 NO CARRIER is a tool to auto-close old GitHub issues that were abandoned by their reporter, which is to say that we were waiting for a response from the reporter but never got a response in a reasonable amount of time.
