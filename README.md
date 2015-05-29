@@ -23,9 +23,11 @@ By automating the process of closing abandoned issues, the issue tracker is kept
 ## Usage
 Java 8+ is required to run NO CARRIER. For instructions on building NO CARRIER yourself, see [the Contributing docs](https://github.com/twbs/no-carrier/blob/master/CONTRIBUTING.md).
 
-NO CARRIER accepts exactly 5 command line arguments. Once you've built the JAR, run e.g. `java -jar no-carrier-assembly-1.0.jar <username> <password> <owner/repo> <label> <days>`. Here's what each of the arguments is:
-* `username`: Username of GitHub user to login as
-* `password`: Password of GitHub user to login as
+NO CARRIER requires 2 environment variables to be set:
+* `$GITHUB_USERNAME` - Username of GitHub user for NO CARRIER to login as
+* `$GITHUB_PASSWORD` - Password of GitHub user for NO CARRIER to login as
+
+NO CARRIER accepts exactly 3 command line arguments. Once you've built the JAR, run e.g. `java -jar no-carrier-assembly-1.0.jar <owner/repo> <label> <days>`. Here's what each of the arguments is:
 * `owner/repo`: GitHub repo whose issues will be operated upon (example: `twbs/bootstrap` for [Bootstrap](https://github.com/twbs/bootstrap))
 * `label`: Name of label used on the repo's GitHub issue tracker to indicate that the issue is blocked waiting for a reply from a user (typically the issue's original poster).
 * `days`: Integer number of days. If at least this number of days elapses after an issue has been labeled without any new comment being posted, NO CARRIER will close the issue and post an explanatory comment.

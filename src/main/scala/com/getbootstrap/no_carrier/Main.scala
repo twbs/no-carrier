@@ -23,8 +23,10 @@ object Main extends App with StrictLogging {
   implicit val clock = Clock.systemUTC
   implicit val userAgent = new UserAgent("NoCarrier/0.1 (https://github.com/twbs/no-carrier)")
   val rateLimitThreshold = 10
+  val username = EnvVars.getRequired("GITHUB_USERNAME")
+  val password = EnvVars.getRequired("GITHUB_PASSWORD")
   val arguments = (args.toSeq match {
-    case Seq(username, password, RepositoryId(repoId), NonEmptyStr(label), IntFromStr(PositiveInt(dayCount))) => {
+    case Seq(RepositoryId(repoId), NonEmptyStr(label), IntFromStr(PositiveInt(dayCount))) => {
       Some(Arguments(
         Credentials(username = username, password = password).github(rateLimitThreshold),
         repoId = repoId,
@@ -33,7 +35,7 @@ object Main extends App with StrictLogging {
       ))
     }
     case _ => {
-      System.err.println("USAGE: no-carrier <username> <password> <owner/repo> <label> <days>")
+      System.err.println("USAGE: no-carrier <owner/repo> <label> <days>")
       System.exit(1)
       None // dead code
     }
