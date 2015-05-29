@@ -1,7 +1,7 @@
 package com.getbootstrap.no_carrier
 
 import java.time.{Clock, Duration}
-import scala.util.{Success, Failure}
+import scala.util.{Success, Failure, Properties}
 import scala.util.Try
 import com.jcabi.github.{Github, Issue}
 import com.jcabi.github.Coordinates.{Simple=>RepoId}
@@ -10,6 +10,7 @@ import com.getbootstrap.no_carrier.github.{Credentials, FancyIssue}
 import com.getbootstrap.no_carrier.github.util._
 import com.getbootstrap.no_carrier.http.UserAgent
 import com.getbootstrap.no_carrier.util._
+
 
 case class Arguments(
   github: Github,
@@ -23,17 +24,27 @@ object Main extends App with StrictLogging {
   implicit val clock = Clock.systemUTC
   implicit val userAgent = new UserAgent("NoCarrier/0.1 (https://github.com/twbs/no-carrier)")
   val rateLimitThreshold = 10
+  val username = Env.requiredEnv("GITHUB_USERNAME")
+  val password = Env.requiredEnv("GITHUB_PASSWORD")
   val arguments = (args.toSeq match {
-    case Seq(username, password, RepositoryId(repoId), NonEmptyStr(label), IntFromStr(PositiveInt(dayCount))) => {
+    case Seq(RepositoryId(repoId), NonEmptyStr(label), IntFromStr(PositiveInt(dayCount))) => {
       Some(Arguments(
-        Credentials(username = username, password = password).github(rateLimitThreshold),
+        Credentials(username = username, password = username).github(rateLimitThreshold),
+        repoId = repoId,
+        label = label,
+        timeout = java.time.Duration.ofDays(dayCount)
+      ))
+    }
+    case Seq(usernameStr, passwordStr, RepositoryId(repoId), NonEmptyStr(label), IntFromStr(PositiveInt(dayCount))) => {
+      Some(Arguments(
+        Credentials(username = usernameStr, password = passwordStr).github(rateLimitThreshold),
         repoId = repoId,
         label = label,
         timeout = java.time.Duration.ofDays(dayCount)
       ))
     }
     case _ => {
-      System.err.println("USAGE: no-carrier <username> <password> <owner/repo> <label> <days>")
+      System.err.println("USAGE: no-carrier <owner/repo> <label> <days>")
       System.exit(1)
       None // dead code
     }

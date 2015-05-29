@@ -30,6 +30,11 @@ NO CARRIER accepts exactly 5 command line arguments. Once you've built the JAR, 
 * `label`: Name of label used on the repo's GitHub issue tracker to indicate that the issue is blocked waiting for a reply from a user (typically the issue's original poster).
 * `days`: Integer number of days. If at least this number of days elapses after an issue has been labeled without any new comment being posted, NO CARRIER will close the issue and post an explanatory comment.
 
+#### Environment Variables
+Optionally you can pass the GitHub username/password credentials via Environment variables
+
+`GITHUB_USERNAME=<username> GITHUB_PASSWORD=<password> sbt 'run-main com.getbootstrap.no_carrier.Main <owner/repo> <label> <days>'`
+
 ## License
 NO CARRIER is released under the [MIT License](https://github.com/twbs/no-carrier/blob/master/LICENSE.txt).
 
