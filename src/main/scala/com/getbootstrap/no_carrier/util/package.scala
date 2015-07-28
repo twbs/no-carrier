@@ -1,6 +1,7 @@
 package com.getbootstrap.no_carrier
 
 import java.time.{Clock, Instant, Duration}
+import com.google.common.base.{Optional=>GuavaOptional}
 
 package object util {
   val InstantOrdering = implicitly[Ordering[Instant]]
@@ -13,6 +14,17 @@ package object util {
       val now = Instant.now(clock)
       val deadline = instant + timeout
       deadline < now
+    }
+  }
+
+  implicit class GoogleToScalaOptional[T](option: GuavaOptional[T]) {
+    def toOption: Option[T] = {
+      if (option.isPresent) {
+        Some(option.get())
+      }
+      else {
+        None
+      }
     }
   }
 }

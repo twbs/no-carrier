@@ -2,14 +2,14 @@ package com.getbootstrap.no_carrier.github
 
 import java.util.EnumMap
 import java.time.Instant
-import javax.json.JsonObject
-import scala.util.{Try,Success}
+import scala.util.Try
 import scala.collection.JavaConverters._
-import com.jcabi.github.{Event => IssueEvent, Issue, Issues, IssueLabels, Comment, Search, Repo, Repos}
+import com.jcabi.github.{Event => IssueEvent, _}
 import com.jcabi.github.Issue.{Smart=>SmartIssue}
 import com.jcabi.github.Event.{Smart=>SmartIssueEvent}
 import com.jcabi.github.Comment.{Smart=>SmartComment}
 import com.jcabi.github.Repos.RepoCreate
+import com.getbootstrap.no_carrier.util.GoogleToScalaOptional
 
 package object util {
   implicit class RichIssues(issues: Issues) {
@@ -28,7 +28,7 @@ package object util {
     def commentsIterable: Iterable[Comment] = issue.comments.iterate.asScala
 
     def lastLabelledWithAt(label: String): Option[Instant] = {
-      val labellings = issue.smartEvents.filter{ event => event.isLabeled && event.label == Some(label) }
+      val labellings = issue.smartEvents.filter{ event => event.labelOption.exists{ _.name == label } }
       labellings.lastOption.map{ _.createdAt.toInstant }
     }
   }
@@ -48,14 +48,7 @@ package object util {
   }
 
   implicit class RichSmartIssueEvent(event: SmartIssueEvent) {
-    def isLabeled: Boolean = event.`type` == IssueEvent.LABELED
-
-    def label: Option[String] = {
-      // FIXME: Use event.label.name once jcabi-github 0.24+ is available
-      Try {Option[JsonObject](event.json.getJsonObject("label")).map {_.getString("name")}}.recoverWith {
-        case _: ClassCastException => Success(None)
-      }.get
-    }
+    def labelOption: Option[Label] = event.label.toOption
   }
 
   implicit class RichComment(comment: Comment) {
