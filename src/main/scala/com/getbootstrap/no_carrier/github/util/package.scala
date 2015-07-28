@@ -9,6 +9,7 @@ import com.jcabi.github.{Event => IssueEvent, Issue, Issues, IssueLabels, Commen
 import com.jcabi.github.Issue.{Smart=>SmartIssue}
 import com.jcabi.github.Event.{Smart=>SmartIssueEvent}
 import com.jcabi.github.Comment.{Smart=>SmartComment}
+import com.jcabi.github.Repos.RepoCreate
 
 package object util {
   implicit class RichIssues(issues: Issues) {
@@ -62,11 +63,8 @@ package object util {
   }
 
   implicit class RichRepos(repos: Repos) {
-    import javax.json.Json
-
     def create(name: String): Repo = {
-      val json = Json.createObjectBuilder.add("name", name).build
-      repos.create(json)
+      repos.create(new RepoCreate(name, true))
     }
   }
 
