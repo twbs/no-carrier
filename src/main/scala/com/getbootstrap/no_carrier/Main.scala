@@ -103,6 +103,7 @@ object Main extends App with StrictLogging {
 
     val loggersToSquelch = Set(
       "com.jcabi.aspects.aj.NamedThreads",
+      "com.jcabi.github.Issue$Smart",
       "com.jcabi.http.request.BaseRequest",
       "com.jcabi.manifests.Manifests"
     )
