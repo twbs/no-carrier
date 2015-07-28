@@ -45,10 +45,15 @@ object Main extends App with StrictLogging {
 
   def main(args: Arguments) {
     logger.info("Started session.")
-    val repo = args.github.repos.get(args.repoId)
+    val github = args.github
+    val rateLimit = github.rateLimit
+    val repo = github.repos.get(args.repoId)
 
     val waitingOnOp = repo.issues.openWithLabel(args.label)
-    val opNeverDelivered = waitingOnOp.filter{ issue => new FancyIssue(issue = issue, label = args.label, timeout = args.timeout).opNeverDelivered }
+    val opNeverDelivered = waitingOnOp.filter{ issue => {
+      logger.info(s"GitHub rate limit status: ${rateLimit.summary}")
+      new FancyIssue(issue = issue, label = args.label, timeout = args.timeout).opNeverDelivered
+    } }
     val totalClosed = opNeverDelivered.map { issue =>
       if (closeOut(issue, args.timeout)) 1 else 0
     }.sum

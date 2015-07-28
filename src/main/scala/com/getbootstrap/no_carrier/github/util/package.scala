@@ -8,6 +8,7 @@ import com.jcabi.github.{Event => IssueEvent, _}
 import com.jcabi.github.Issue.{Smart=>SmartIssue}
 import com.jcabi.github.Event.{Smart=>SmartIssueEvent}
 import com.jcabi.github.Comment.{Smart=>SmartComment}
+import com.jcabi.github.Limit.{Smart=>SmartLimit}
 import com.jcabi.github.Repos.RepoCreate
 import com.getbootstrap.no_carrier.util.GoogleToScalaOptional
 
@@ -68,5 +69,17 @@ package object util {
       singleton.add(label)
       labels.add(singleton)
     }
+  }
+
+  implicit class RichGithub(github: Github) {
+    def rateLimit = new SmartLimit(github.limits.get(Limits.CORE))
+  }
+
+  implicit class RichSmartLimit(limit: SmartLimit) {
+    private def resetTimestamp: String = {
+      import java.time.format.DateTimeFormatter.ISO_INSTANT
+      ISO_INSTANT.format(limit.reset.toInstant)
+    }
+    def summary: String = s"[${limit.remaining}/${limit.limit}] (resets @ ${resetTimestamp})"
   }
 }
