@@ -16,6 +16,10 @@ libraryDependencies += "ch.qos.logback" %  "logback-classic" % "1.1.2"
 
 libraryDependencies += "org.specs2" %% "specs2" % "2.3.12" % "test"
 
+// Because jcabi-github:
+
+libraryDependencies += "com.google.code.findbugs" % "annotations" % "2.0.1"
+
 scalacOptions := Seq("-unchecked", "-deprecation", "-feature", "–Xlint", "-encoding", "utf8")
 
 scalacOptions in Test ++= Seq("-Yrangepos")
