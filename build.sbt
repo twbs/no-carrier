@@ -8,7 +8,9 @@ mainClass := Some("com.getbootstrap.no_carrier.Main")
 
 resolvers ++= Seq("snapshots", "releases").map(Resolver.sonatypeRepo)
 
-libraryDependencies += "com.jcabi" % "jcabi-github" % "0.24"
+val jcabiV = "0.24"
+
+libraryDependencies += "com.jcabi" % "jcabi-github" % jcabiV
 
 libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0"
 
@@ -19,6 +21,14 @@ libraryDependencies += "org.specs2" %% "specs2" % "2.3.12" % "test"
 // Because jcabi-github:
 
 libraryDependencies += "com.google.code.findbugs" % "annotations" % "2.0.1"
+
+packageOptions in (Compile, packageBin) ++= {
+  Seq(
+    Package.ManifestAttributes("JCabi-Version" -> jcabiV),
+    Package.ManifestAttributes("JCabi-Build" -> "abcdef"),
+    Package.ManifestAttributes("JCabi-Date" -> "2015-08-01")
+  )
+}
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-feature", "–Xlint", "-encoding", "utf8")
 
