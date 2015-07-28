@@ -23,7 +23,7 @@ case class Arguments(
 }
 
 object Main extends App with StrictLogging {
-  val enabled = false
+  val enabled = true
   implicit val clock = Clock.systemUTC
   val rateLimitThreshold = 10
   val username = EnvVars.getRequired("GITHUB_USERNAME")
