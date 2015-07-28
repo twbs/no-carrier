@@ -78,7 +78,9 @@ object Main extends App with StrictLogging {
            |
            |Don't worry though; if this is in error, let us know with a comment and we'll be happy to reopen the issue.
            |
-           |Thanks!""".stripMargin
+           |Thanks!
+           |
+           |(*Please note that this is an [automated](https://github.com/twbs/no-carrier) comment.*)""".stripMargin
 
       val attempt = Try{ issue.comments.post(explanatoryComment) }.flatMap{ comment => {
         logger.info(s"Posted comment #${comment.number}")
