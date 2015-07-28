@@ -48,6 +48,7 @@ object Main extends App with StrictLogging {
   main(arguments)
 
   def main(args: Arguments) {
+    squelchExcessiveLogging()
     logger.info("Started session.")
     val github = args.github
     val rateLimit = github.rateLimit
@@ -90,6 +91,20 @@ object Main extends App with StrictLogging {
     }
     else {
       false
+    }
+  }
+
+  def squelchExcessiveLogging() {
+    import org.slf4j.LoggerFactory
+    import ch.qos.logback.classic.{Logger,Level}
+
+    val loggersToSquelch = Set(
+      "com.jcabi.aspects.aj.NamedThreads",
+      "com.jcabi.http.request.BaseRequest",
+      "com.jcabi.manifests.Manifests"
+    )
+    for { loggerName <- loggersToSquelch } {
+      LoggerFactory.getLogger(loggerName).asInstanceOf[Logger].setLevel(Level.WARN)
     }
   }
 }
