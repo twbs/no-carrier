@@ -8,7 +8,7 @@ mainClass := Some("com.getbootstrap.no_carrier.Main")
 
 resolvers ++= Seq("snapshots", "releases").map(Resolver.sonatypeRepo)
 
-libraryDependencies += "com.jcabi" % "jcabi-github" % "0.23"
+libraryDependencies += "com.jcabi" % "jcabi-github" % "0.24"
 
 libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0"
 
