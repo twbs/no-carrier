@@ -12,26 +12,30 @@ import com.getbootstrap.no_carrier.http.UserAgent
 import com.getbootstrap.no_carrier.util._
 
 case class Arguments(
-  github: Github,
+  creds: Credentials,
   repoId: RepoId,
   label: String,
-  timeout: Duration
-)
+  timeout: Duration,
+  rateLimitThreshold: Int
+) {
+  private implicit val userAgent = new UserAgent("NoCarrier/0.1 (https://github.com/twbs/no-carrier)")
+  lazy val github: Github = creds.github(rateLimitThreshold)
+}
 
 object Main extends App with StrictLogging {
   val enabled = false
   implicit val clock = Clock.systemUTC
-  implicit val userAgent = new UserAgent("NoCarrier/0.1 (https://github.com/twbs/no-carrier)")
   val rateLimitThreshold = 10
   val username = EnvVars.getRequired("GITHUB_USERNAME")
   val password = EnvVars.getRequired("GITHUB_PASSWORD")
   val arguments = (args.toSeq match {
     case Seq(RepositoryId(repoId), NonEmptyStr(label), IntFromStr(PositiveInt(dayCount))) => {
       Some(Arguments(
-        Credentials(username = username, password = password).github(rateLimitThreshold),
+        Credentials(username = username, password = password),
         repoId = repoId,
         label = label,
-        timeout = java.time.Duration.ofDays(dayCount)
+        timeout = java.time.Duration.ofDays(dayCount),
+        rateLimitThreshold = rateLimitThreshold
       ))
     }
     case _ => {
@@ -48,6 +52,7 @@ object Main extends App with StrictLogging {
     val github = args.github
     val rateLimit = github.rateLimit
     val repo = github.repos.get(args.repoId)
+    logger.info(s"Repo(${args.repoId}), ${args.creds}, Label(${args.label}), Timeout(${args.timeout})")
 
     val waitingOnOp = repo.issues.openWithLabel(args.label)
     val opNeverDelivered = waitingOnOp.filter{ issue => {
