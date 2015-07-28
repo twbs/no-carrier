@@ -58,6 +58,7 @@ object Main extends App with StrictLogging {
     val waitingOnOp = repo.issues.openWithLabel(args.label)
     val opNeverDelivered = waitingOnOp.filter{ issue => {
       logger.info(s"GitHub rate limit status: ${rateLimit.summary}")
+      logger.info(s"Checking issue #${issue.number} ...")
       new FancyIssue(issue = issue, label = args.label, timeout = args.timeout).opNeverDelivered
     } }
     val totalClosed = opNeverDelivered.map { issue =>
