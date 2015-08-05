@@ -22,7 +22,7 @@ By automating the process of closing abandoned issues, the issue tracker is kept
 * [Your Project Here]; send us a pull request and we'll add you to the list
 
 ## Usage
-Java 8+ is required to run NO CARRIER. For instructions on building NO CARRIER yourself, see [the Contributing docs](https://github.com/twbs/no-carrier/blob/master/CONTRIBUTING.md).
+Java 8+ is required to run NO CARRIER. You can download NO CARRIER's prebuilt assembly JAR from [our GitHub Releases page](https://github.com/twbs/no-carrier/releases). For instructions on building NO CARRIER yourself from source, see [the Contributing docs](https://github.com/twbs/no-carrier/blob/master/CONTRIBUTING.md).
 
 NO CARRIER requires 2 environment variables to be set:
 * `$GITHUB_USERNAME` - Username of GitHub user for NO CARRIER to login as
