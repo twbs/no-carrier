@@ -28,7 +28,7 @@ NO CARRIER requires 2 environment variables to be set:
 * `$GITHUB_USERNAME` - Username of GitHub user for NO CARRIER to login as
 * `$GITHUB_PASSWORD` - Password of GitHub user for NO CARRIER to login as
 
-NO CARRIER accepts exactly 3 command line arguments. Once you've built the JAR, run e.g. `java -jar no-carrier-assembly-1.0.jar <owner/repo> <label> <days>`. Here's what each of the arguments is:
+NO CARRIER accepts exactly 3 command line arguments. Once you have the JAR, run e.g. `java -jar no-carrier.jar <owner/repo> <label> <days>`. Here's what each of the arguments is:
 * `owner/repo`: GitHub repo whose issues will be operated upon (example: `twbs/bootstrap` for [Bootstrap](https://github.com/twbs/bootstrap))
 * `label`: Name of label used on the repo's GitHub issue tracker to indicate that the issue is blocked waiting for a reply from a user (typically the issue's original poster).
 * `days`: Integer number of days. If at least this number of days elapses after an issue has been labeled without any new comment being posted, NO CARRIER will close the issue and post an explanatory comment.
