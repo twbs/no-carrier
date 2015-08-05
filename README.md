@@ -19,6 +19,7 @@ By automating the process of closing abandoned issues, the issue tracker is kept
 
 ## Used by
 * [Bootstrap](https://github.com/twbs/bootstrap); see [@twbs-closer](https://github.com/twbs-closer)
+* [Your Project Here]; send us a pull request and we'll add you to the list
 
 ## Usage
 Java 8+ is required to run NO CARRIER. For instructions on building NO CARRIER yourself, see [the Contributing docs](https://github.com/twbs/no-carrier/blob/master/CONTRIBUTING.md).
