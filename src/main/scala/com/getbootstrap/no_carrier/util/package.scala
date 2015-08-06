@@ -27,4 +27,11 @@ package object util {
       }
     }
   }
+
+  implicit class LoggerName(name: String) {
+    import ch.qos.logback.classic.Logger
+    import org.slf4j.LoggerFactory
+
+    def logger: Logger = LoggerFactory.getLogger(name).asInstanceOf[Logger]
+  }
 }

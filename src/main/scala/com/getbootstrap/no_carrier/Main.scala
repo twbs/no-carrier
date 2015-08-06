@@ -98,17 +98,17 @@ object Main extends App with StrictLogging {
   }
 
   def squelchExcessiveLogging() {
-    import org.slf4j.LoggerFactory
-    import ch.qos.logback.classic.{Logger,Level}
+    import ch.qos.logback.classic.Level
 
     val loggersToSquelch = Set(
       "com.jcabi.aspects.aj.NamedThreads",
-      "com.jcabi.github.Issue$Smart",
       "com.jcabi.http.request.BaseRequest",
       "com.jcabi.manifests.Manifests"
     )
     for { loggerName <- loggersToSquelch } {
-      LoggerFactory.getLogger(loggerName).asInstanceOf[Logger].setLevel(Level.WARN)
+      loggerName.logger.setLevel(Level.WARN)
     }
+
+    "com.jcabi.github.Issue$Smart".logger.setLevel(Level.OFF)
   }
 }
