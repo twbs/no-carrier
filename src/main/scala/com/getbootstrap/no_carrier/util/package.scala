@@ -1,20 +1,15 @@
 package com.getbootstrap.no_carrier
 
-import java.time.{Clock, Instant, Duration}
+import java.time.{Instant, Duration}
 import com.google.common.base.{Optional=>GuavaOptional}
 
 package object util {
   val InstantOrdering = implicitly[Ordering[Instant]]
+  val DurationOrdering = implicitly[Ordering[Duration]]
 
   implicit class RichInstant(instant: Instant) {
-    import InstantOrdering._
-
     def +(duration: Duration): Instant = instant.plus(duration)
-    def isBeyondTimeout(timeout: Duration)(implicit clock: Clock): Boolean = {
-      val now = Instant.now(clock)
-      val deadline = instant + timeout
-      deadline < now
-    }
+    def -(earlier: Instant): Duration = Duration.between(earlier, instant)
   }
 
   implicit class GoogleToScalaOptional[T](option: GuavaOptional[T]) {

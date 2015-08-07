@@ -55,26 +55,28 @@ object Main extends App with StrictLogging {
     val repo = github.repos.get(args.repoId)
     logger.info(s"Repo(${args.repoId}), ${args.creds}, Label(${args.label}), Timeout(${args.timeout})")
 
-    val waitingOnOp = repo.issues.openWithLabel(args.label)
+    val waitingOnOp = repo.issues.openWithLabel(args.label).map{ issue =>
+      new FancyIssue(issue = issue, label = args.label, timeout = args.timeout)
+    }
     val opNeverDelivered = waitingOnOp.filter{ issue => {
       logger.info(s"GitHub rate limit status: ${rateLimit.summary}")
-      logger.info(s"Checking issue #${issue.number} ...")
-      new FancyIssue(issue = issue, label = args.label, timeout = args.timeout).opNeverDelivered
+      logger.info(s"Checking issue #${issue.issue.number} ...")
+      issue.opNeverDelivered
     } }
     val totalClosed = opNeverDelivered.map { issue =>
-      if (closeOut(issue, args.timeout)) 1 else 0
+      if (closeOut(issue.issue, issue.elapsed.get)) 1 else 0
     }.sum
     logger.info(s"Closed ${totalClosed} issues.")
     logger.info("Session complete; exiting.")
   }
 
-  def closeOut(issue: Issue, timeout: Duration): Boolean = {
+  def closeOut(issue: Issue, elapsed: Duration): Boolean = {
     logger.info(s"OP never delivered on issue #${issue.number}. Going to close it out.")
     if (enabled) {
       val explanatoryComment =
         s"""Hey there!
            |
-           |We're automatically closing this issue since the original poster (or another commenter) hasn't yet responded to the question or request made to them ${timeout.toDays} days ago. We therefore assume that the user has lost interest or resolved the problem on their own. Closed issues that remain inactive for a long period may get automatically locked.
+           |We're automatically closing this issue since the original poster (or another commenter) hasn't yet responded to the question or request made to them ${elapsed.toDays} days ago. We therefore assume that the user has lost interest or resolved the problem on their own. Closed issues that remain inactive for a long period may get automatically locked.
            |
            |Don't worry though; if this is in error, let us know with a comment and we'll be happy to reopen the issue.
            |
