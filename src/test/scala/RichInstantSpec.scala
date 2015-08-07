@@ -1,8 +1,13 @@
 import java.time._
 import org.specs2.mutable._
 import com.getbootstrap.no_carrier.util.RichInstant
+import com.getbootstrap.no_carrier.util.DurationOrdering._
 
 class RichInstantSpec extends Specification {
+  private implicit class RicherInstant(instant: Instant) {
+    def isBeyondTimeout(timeout: Duration)(implicit clk: Clock): Boolean = (clk.instant() - instant) > timeout
+  }
+
   val utc = ZoneId.of("UTC")
   val pseudoNow = ZonedDateTime.of(LocalDateTime.of(2015, 3, 17, 1, 2), utc).toInstant
   implicit val clock = StoppedClock(pseudoNow)
