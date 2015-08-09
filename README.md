@@ -33,6 +33,9 @@ NO CARRIER accepts exactly 3 command line arguments. Once you have the JAR, run 
 * `label`: Name of label used on the repo's GitHub issue tracker to indicate that the issue is blocked waiting for a reply from a user (typically the issue's original poster).
 * `days`: Integer number of days. If at least this number of days elapses after an issue has been labeled without any new comment being posted, NO CARRIER will close the issue and post an explanatory comment.
 
+### Heroku
+We also have specific [instructions for setting up NO CARRIER on Heroku](https://github.com/twbs/no-carrier/wiki/Heroku), courtesy of [@zxqfox](https://github.com/zxqfox).
+
 ## License
 NO CARRIER is released under the [MIT License](https://github.com/twbs/no-carrier/blob/master/LICENSE.txt).
 
