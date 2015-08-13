@@ -1,4 +1,5 @@
 #!/bin/bash
+# Step 0: Edit ./no-carrier.env.list so it contains the actual GitHub login credentials
 
 set -e -x
 
@@ -20,5 +21,6 @@ ufw status verbose
 # setup Docker; written against Docker v1.8.0
 docker rmi no-carrier
 docker build --tag no-carrier . 2>&1 | tee docker.build.log
+cp ./no-carrier.env.list /etc/no-carrier.env.list
 cp ./no-carrier.crontab /etc/cron.d/no-carrier
 restart cron # until upstart goes away
