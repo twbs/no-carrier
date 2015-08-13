@@ -1,0 +1,1 @@
+0 0 * * * root docker run --rm=true no-carrier 2>&1 >> /var/log/no-carrier.log
