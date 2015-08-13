@@ -1,1 +1,1 @@
-0 0 * * * root docker run --rm=true --env-file /etc/no-carrier.env.list no-carrier 2>&1 >> /var/log/no-carrier.log
+0 0 * * * root docker run --rm=true --env-file /etc/no-carrier.env.list no-carrier twbs/bootstrap 'awaiting reply' 14 2>&1 >> /var/log/no-carrier.log
