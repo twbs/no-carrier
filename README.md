@@ -17,6 +17,9 @@ And then you wait for a reply. Unfortunately, for whatever reason, a surprisingl
 
 By automating the process of closing abandoned issues, the issue tracker is kept clean with less tedium on the part of issue triagers. The abandoned issue expiration policy is also applied more uniformly/fairly, and it's easier to use a canonical template for the closing issue comment that clearly and politely explains the reason for the closure.
 
+Example of the bot in action:
+![Screenshot of the bot closing an issue](https://cloud.githubusercontent.com/assets/588473/9140079/76090ed4-3cfc-11e5-83ab-554171c9cb79.png)
+
 ## Used by
 * [Bootstrap](https://github.com/twbs/bootstrap); see [@twbs-closer](https://github.com/twbs-closer)
 * [Your Project Here]; send us a pull request and we'll add you to the list
