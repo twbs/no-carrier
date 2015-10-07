@@ -25,6 +25,8 @@ Example of the bot in action:
 * [Your Project Here]; send us a pull request and we'll add you to the list
 
 ## Usage
+NO CARRIER is designed to be run as a [cron job](https://en.wikipedia.org/wiki/Cron).
+
 Java 8+ is required to run NO CARRIER. You can download NO CARRIER's prebuilt assembly JAR from [our GitHub Releases page](https://github.com/twbs/no-carrier/releases). For instructions on building NO CARRIER yourself from source, see [the Contributing docs](https://github.com/twbs/no-carrier/blob/master/CONTRIBUTING.md).
 
 NO CARRIER requires 2 environment variables to be set:
