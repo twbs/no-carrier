@@ -54,4 +54,4 @@ We all stand on the shoulders of giants and get by with a little help from our f
 * [LMVTFY](https://github.com/cvrebert/lmvtfy), NO CARRIER's sister bot who does HTML validation
 * [Savage](https://github.com/twbs/savage), NO CARRIER's sister bot who runs cross-browser JS tests on Sauce Labs
 * [Rorschach](https://github.com/twbs/rorschach), NO CARRIER's sister bot who sanity-checks Bootstrap pull requests
-* [@rails-bot](https://github.com/rails-bot?tab=activity), a similar but apparently closed-source bot used by the Rails team
+* [rails-bot](https://github.com/rails/rails-bot), a similar bot used by the Rails team
