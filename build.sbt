@@ -2,7 +2,7 @@ name := "no-carrier"
 
 version := "1.0.0"
 
-scalaVersion := "2.11.5"
+scalaVersion := "2.11.8"
 
 mainClass := Some("com.getbootstrap.no_carrier.Main")
 
@@ -16,7 +16,7 @@ libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0"
 
 libraryDependencies += "ch.qos.logback" %  "logback-classic" % "1.1.2"
 
-libraryDependencies += "org.specs2" %% "specs2" % "2.3.12" % "test"
+libraryDependencies += "org.specs2" %% "specs2-core" % "3.8.4" % "test"
 
 // Because jcabi-github:
 
