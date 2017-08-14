@@ -4,7 +4,7 @@ NO CARRIER
 ![Development Status :: 4 - Beta](https://img.shields.io/badge/maturity-beta-yellow.svg "Development Status :: 4 - Beta")
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg "MIT License")](https://github.com/twbs/no-carrier/blob/master/LICENSE.txt)
 
-NO CARRIER is a tool to auto-close old GitHub issues that were abandoned by their reporter, which is to say that we were waiting for a response from the reporter but never got a response in a reasonable amount of time.
+NO CARRIER is a tool to auto-close old GitHub issues and pull requests that were abandoned by their reporter, which is to say that we were waiting for a response from the reporter but never got a response in a reasonable amount of time.
 
 Named after [the message indicating that your dial-up modem has lost its connection.](http://en.wikipedia.org/wiki/NO_CARRIER#As_Internet_slang)
 
@@ -40,6 +40,9 @@ NO CARRIER accepts exactly 3 command line arguments. Once you have the JAR, run 
 
 ### Heroku
 We also have specific [instructions for setting up NO CARRIER on Heroku](https://github.com/twbs/no-carrier/wiki/Heroku), courtesy of [@zxqfox](https://github.com/zxqfox).
+
+### Pull requests
+NO CARRIER closes old pull requests according to the same rules it uses to close old issues. This is possible since GitHub treats issues and pull requests as different variations of the same underlying object.
 
 ## License
 NO CARRIER is released under the [MIT License](https://github.com/twbs/no-carrier/blob/master/LICENSE.txt).
